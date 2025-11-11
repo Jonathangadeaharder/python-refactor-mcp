@@ -1,0 +1,115 @@
+=================================================================================
+MCP-LSP Bridge - Integration Test Execution
+=================================================================================
+
+Execution Time: 2025-11-11 10:17:19 UTC
+Branch: claude/mcp-lsp-bridge-python-refactor-011CV1t4sPKxu2wtcgd8FXV1
+Commit: e37f0a6ffbae6c38c7994d976e84a0f70fbd2764
+Triggered by: push
+
+=================================================================================
+Test Output:
+=================================================================================
+
+
+================================================================================
+Python Refactor MCP Server - Integration Tests
+================================================================================
+
+[SETUP] Starting MCP server and LSP client...
+✓ Server started successfully
+
+================================================================================
+TEST 1: Navigation Tools
+================================================================================
+
+[Setup] Opening file in LSP...
+
+[1.1] Testing get_definition on 'calculate_total'...
+ℹ  No definition found (LSP may still be indexing)
+
+[1.2] Testing get_references for 'calculate_total'...
+✓ Found 4 reference(s)
+  1. main.py at line 10
+  2. main.py at line 46
+  3. utils.py at line 9
+
+[1.3] Testing get_hover_info for 'DataProcessor'...
+✓ Retrieved hover info: (class) DataProcessor
+
+A class for processing data....
+
+✓ All navigation tool tests completed!
+
+================================================================================
+TEST 2: Refactoring Tools
+================================================================================
+
+[Setup] Ensuring file is open in LSP...
+
+[2.1] Testing get_code_actions for 'calculate_total' function...
+ℹ  No refactoring actions available for this selection
+
+[2.2] Testing rename_symbol to generate WorkspaceEdit plan...
+✓ WorkspaceEdit plan generated successfully!
+  Document changes: 1
+    - main.py: 3 edit(s)
+
+  ℹ  Security Note: WorkspaceEdit generated but NOT applied.
+     In production, user must review and approve before applying.
+
+✓ All refactoring tool tests completed!
+
+================================================================================
+TEST 3: Cross-File Reference Tracking
+================================================================================
+
+[Setup] Opening files in LSP...
+
+[3.1] Testing cross-file references for 'calculate_total'...
+✓ Found 4 reference(s) across project
+  1. main.py at line 10
+  2. main.py at line 46
+  3. utils.py at line 9
+  4. utils.py at line 16
+  ✓ Cross-file reference detected in utils.py
+
+✓ Cross-file reference test completed!
+
+================================================================================
+TEST 4: Two-Stage Security Model
+================================================================================
+
+[4.1] Verifying rename_symbol does NOT modify files...
+✓ File content unchanged after rename_symbol call
+  ✓ Security model verified: plan generated without modification
+
+✓ Two-stage security model verified!
+
+================================================================================
+TEST SUMMARY
+================================================================================
+
+Tests passed: 4/4
+
+✓ All tests passed!
+
+[CLEANUP] Shutting down server...
+✓ Server shut down successfully
+
+=================================================================================
+Test Summary:
+=================================================================================
+Status: ✅ PASSED
+Exit Code: 0
+
+=================================================================================
+System Information:
+=================================================================================
+
+Python Version: Python 3.11.14
+Pyright Version: pyright 1.1.407
+Node.js Version: v20.19.5
+Runner OS: Linux
+
+=================================================================================

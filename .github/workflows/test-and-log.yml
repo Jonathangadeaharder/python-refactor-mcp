@@ -122,8 +122,8 @@ jobs:
       - name: Amend commit with test log
         if: always()
         run: |
-          # Add the log file
-          git add test_execution.log
+          # Force-add the log file (it's in .gitignore)
+          git add -f test_execution.log
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then
