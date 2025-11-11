@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "python-refactor": {
+      "command": "uv",
+      "args": [
+        "run",
+        "python-refactor-mcp",
+        "/absolute/path/to/your/python/project"
+      ],
+      "env": {}
+    }
+  }
+}
