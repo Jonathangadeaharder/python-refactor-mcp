@@ -1,0 +1,150 @@
+name: Test and Log Results
+
+on:
+  push:
+    branches:
+      - 'claude/**'
+      - 'main'
+      - 'develop'
+
+permissions:
+  contents: write
+
+jobs:
+  test-and-amend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Pyright
+        run: |
+          npm install -g pyright
+          echo "Pyright version:"
+          pyright --version
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          source $HOME/.cargo/env
+          uv pip install --system -e .
+
+      - name: Run integration tests and capture output
+        id: run_tests
+        run: |
+          # Create timestamp
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+          # Run tests and capture output
+          echo "=================================================================================" > test_execution.log
+          echo "MCP-LSP Bridge - Integration Test Execution" >> test_execution.log
+          echo "=================================================================================" >> test_execution.log
+          echo "" >> test_execution.log
+          echo "Execution Time: $TIMESTAMP" >> test_execution.log
+          echo "Branch: ${{ github.ref_name }}" >> test_execution.log
+          echo "Commit: ${{ github.sha }}" >> test_execution.log
+          echo "Triggered by: ${{ github.event_name }}" >> test_execution.log
+          echo "" >> test_execution.log
+          echo "=================================================================================" >> test_execution.log
+          echo "Test Output:" >> test_execution.log
+          echo "=================================================================================" >> test_execution.log
+          echo "" >> test_execution.log
+
+          # Run tests and append output (capture both stdout and stderr)
+          python tests/test_integration.py 2>&1 | tee -a test_execution.log
+
+          # Capture exit code
+          TEST_EXIT_CODE=${PIPESTATUS[0]}
+
+          echo "" >> test_execution.log
+          echo "=================================================================================" >> test_execution.log
+          echo "Test Summary:" >> test_execution.log
+          echo "=================================================================================" >> test_execution.log
+
+          if [ $TEST_EXIT_CODE -eq 0 ]; then
+            echo "Status: ✅ PASSED" >> test_execution.log
+            echo "Exit Code: 0" >> test_execution.log
+            echo "test_status=passed" >> $GITHUB_OUTPUT
+          else
+            echo "Status: ❌ FAILED" >> test_execution.log
+            echo "Exit Code: $TEST_EXIT_CODE" >> test_execution.log
+            echo "test_status=failed" >> $GITHUB_OUTPUT
+          fi
+
+          echo "" >> test_execution.log
+          echo "=================================================================================" >> test_execution.log
+          echo "System Information:" >> test_execution.log
+          echo "=================================================================================" >> test_execution.log
+          echo "" >> test_execution.log
+          echo "Python Version: $(python --version)" >> test_execution.log
+          echo "Pyright Version: $(pyright --version)" >> test_execution.log
+          echo "Node.js Version: $(node --version)" >> test_execution.log
+          echo "Runner OS: ${{ runner.os }}" >> test_execution.log
+          echo "" >> test_execution.log
+          echo "=================================================================================" >> test_execution.log
+
+          # Show summary in GitHub Actions log
+          echo "### Test Results" >> $GITHUB_STEP_SUMMARY
+          if [ $TEST_EXIT_CODE -eq 0 ]; then
+            echo "✅ **All tests passed!**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Tests failed!**" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See \`test_execution.log\` in the commit for full details." >> $GITHUB_STEP_SUMMARY
+
+          exit $TEST_EXIT_CODE
+
+      - name: Configure Git
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Amend commit with test log
+        if: always()
+        run: |
+          # Add the log file
+          git add test_execution.log
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit (log file may already exist with same content)"
+          else
+            # Amend the commit with the log
+            git commit --amend --no-edit
+
+            echo "Log file added to commit via amend"
+          fi
+
+      - name: Force push amended commit
+        if: always()
+        run: |
+          # Force push the amended commit
+          git push --force-with-lease origin ${{ github.ref_name }}
+
+          echo "✅ Test log has been force-pushed to branch ${{ github.ref_name }}"
+
+      - name: Fail if tests failed
+        if: steps.run_tests.outputs.test_status == 'failed'
+        run: |
+          echo "❌ Tests failed - see test_execution.log for details"
+          exit 1

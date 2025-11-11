@@ -294,6 +294,9 @@ This ensures:
 
 ```
 python-refactor-mcp/
+├── .github/workflows/       # GitHub Actions
+│   ├── test-and-log.yml    # Auto-test on push
+│   └── README.md           # Workflow documentation
 ├── src/python_refactor_mcp/
 │   ├── __init__.py          # Package initialization
 │   ├── __main__.py          # Entry point
@@ -301,9 +304,33 @@ python-refactor-mcp/
 │   ├── mcp_server.py        # MCP server & tools
 │   └── workspace_edit.py    # WorkspaceEdit application
 ├── tests/                   # Test suite
+│   ├── test_integration.py  # Integration tests
+│   └── example_project/     # Test fixtures
+├── test_execution.log       # Latest test results (auto-generated)
 ├── pyproject.toml          # Project metadata
 └── README.md               # This file
 ```
+
+### Continuous Integration
+
+This repository includes a GitHub Action that automatically:
+1. Runs the integration test suite on every push
+2. Captures test output to `test_execution.log`
+3. Force-amends the log file to the commit
+4. Pushes the updated commit back to the branch
+
+**After pushing a commit:**
+```bash
+# Wait for GitHub Action to complete (~2-3 minutes)
+
+# Pull the amended commit with test results
+git pull --rebase
+
+# View test results
+cat test_execution.log
+```
+
+See [`.github/workflows/README.md`](.github/workflows/README.md) for full documentation.
 
 ### Running Tests
 
