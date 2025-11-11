@@ -8,11 +8,13 @@ Usage:
     uv run python-refactor-mcp <workspace_root>
 """
 
+import argparse
 import asyncio
 import logging
 import sys
 from pathlib import Path
 
+from . import __version__
 from .mcp_server import PythonRefactorMCPServer
 
 
@@ -30,24 +32,43 @@ def setup_logging() -> None:
 
 async def main() -> None:
     """Main entry point for the MCP server."""
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description="MCP-LSP Bridge: Semantically-aware Python refactoring server",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python -m python_refactor_mcp /path/to/project
+  python -m python_refactor_mcp ~/my-python-app
+
+For more information, visit:
+  https://github.com/Jonathangadeaharder/python-refactor-mcp
+        """,
+    )
+    parser.add_argument(
+        "workspace_root",
+        type=str,
+        help="Path to the Python project workspace root",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"python-refactor-mcp {__version__}",
+    )
+
+    args = parser.parse_args()
+
     setup_logging()
     logger = logging.getLogger(__name__)
 
-    # Parse command line arguments
-    if len(sys.argv) < 2:
-        logger.error("Usage: python -m python_refactor_mcp <workspace_root>")
-        sys.exit(1)
-
-    workspace_root = sys.argv[1]
-
     # Validate workspace root
-    workspace_path = Path(workspace_root).resolve()
+    workspace_path = Path(args.workspace_root).resolve()
     if not workspace_path.exists():
-        logger.error(f"Workspace root does not exist: {workspace_root}")
+        logger.error(f"Workspace root does not exist: {args.workspace_root}")
         sys.exit(1)
 
     if not workspace_path.is_dir():
-        logger.error(f"Workspace root is not a directory: {workspace_root}")
+        logger.error(f"Workspace root is not a directory: {args.workspace_root}")
         sys.exit(1)
 
     logger.info(f"Starting Python Refactor MCP Server for workspace: {workspace_path}")

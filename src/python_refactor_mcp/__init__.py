@@ -5,7 +5,7 @@ This package implements an MCP-LSP bridge that connects AI agents to Pyright
 for type-safe, semantically-aware Python refactoring operations.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 from .lsp_client import LSPClient
 from .mcp_server import PythonRefactorMCPServer
