@@ -1,13 +1,36 @@
 [project]
 name = "python-refactor-mcp"
-version = "0.1.0"
+version = "1.0.0"
 description = "MCP-LSP Bridge: A semantically-aware MCP server for safe Python refactoring using Pyright"
 readme = "README.md"
 requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Python Refactor MCP Contributors" }
+]
+keywords = ["mcp", "lsp", "pyright", "refactoring", "python", "language-server", "ai", "claude"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Text Editors :: Integrated Development Environments (IDE)",
+]
 dependencies = [
     "mcp>=1.0.0",
     "pyright>=1.1.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Jonathangadeaharder/python-refactor-mcp"
+Repository = "https://github.com/Jonathangadeaharder/python-refactor-mcp"
+Issues = "https://github.com/Jonathangadeaharder/python-refactor-mcp/issues"
+Documentation = "https://github.com/Jonathangadeaharder/python-refactor-mcp#readme"
 
 [project.optional-dependencies]
 dev = [
