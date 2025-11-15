@@ -1,7 +1,7 @@
 {
   "output": {
     "filePath": "repomix-output.txt",
-    "style": "markdown",
+    "style": "plain",
     "headerText": "Python Refactor MCP - Codebase Bundle",
     "instructionFilePath": null,
     "removeComments": false,
