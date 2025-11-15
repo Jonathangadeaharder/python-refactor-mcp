@@ -299,7 +299,7 @@ This workflow automatically generates a bundled snapshot of the entire codebase 
 {
   "output": {
     "filePath": "repomix-output.txt",
-    "style": "markdown",
+    "style": "plain",
     "headerText": "Python Refactor MCP - Codebase Bundle"
   },
   "include": [
@@ -325,23 +325,27 @@ This workflow automatically generates a bundled snapshot of the entire codebase 
 
 The generated `repomix-output.txt` contains:
 
-```markdown
-# Python Refactor MCP - Codebase Bundle
+```
+Python Refactor MCP - Codebase Bundle
 
-## Project Structure
+================================================================================
+Project Structure
+================================================================================
 [Directory tree with file counts]
 
-## File Summary
+================================================================================
+File Summary
+================================================================================
 [Statistics: total files, total lines, language breakdown]
 
-## Source Files
-[Each file with syntax highlighting and line numbers]
+================================================================================
+Source Files
+================================================================================
 
----
 File: src/python_refactor_mcp/__init__.py
 Language: Python
 Lines: 42
----
+
 [File contents with line numbers]
 
 ... [all other files]
@@ -431,7 +435,7 @@ Edit `repomix.config.json`:
 ```json
 {
   "output": {
-    "style": "xml",  // Options: "markdown", "xml", "plain"
+    "style": "plain",  // Options: "markdown", "xml", "plain"
     "removeComments": true,  // Strip code comments
     "showLineNumbers": false  // Hide line numbers
   }
