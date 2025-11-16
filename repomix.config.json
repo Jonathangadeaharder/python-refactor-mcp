@@ -1,0 +1,47 @@
+{
+  "output": {
+    "filePath": "repomix-output.txt",
+    "style": "plain",
+    "headerText": "Python Refactor MCP - Codebase Bundle",
+    "instructionFilePath": null,
+    "removeComments": false,
+    "removeEmptyLines": false,
+    "topFilesLength": 10,
+    "showLineNumbers": true,
+    "copyToClipboard": false
+  },
+  "include": [
+    "**/*.py",
+    "**/*.md",
+    "**/*.yml",
+    "**/*.yaml",
+    "**/*.toml",
+    "**/*.json",
+    "**/*.txt"
+  ],
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "**/__pycache__/**",
+      "**/*.pyc",
+      "**/*.pyo",
+      "**/*.pyd",
+      "**/node_modules/**",
+      "**/.venv/**",
+      "**/venv/**",
+      "**/env/**",
+      "**/.pytest_cache/**",
+      "**/.coverage",
+      "**/htmlcov/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/*.egg-info/**",
+      "**/test_execution.log",
+      "**/repomix-output.txt"
+    ]
+  },
+  "security": {
+    "enableSecurityCheck": true
+  }
+}

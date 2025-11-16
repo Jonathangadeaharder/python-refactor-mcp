@@ -1,0 +1,96 @@
+name: Repomix Codebase Bundle
+
+on:
+  push:
+    branches:
+      - 'claude/**'
+      - 'main'
+      - 'develop'
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: read
+
+jobs:
+  repomix:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better context
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Repomix
+        run: |
+          npm install -g repomix
+          echo "Repomix version:"
+          repomix --version
+
+      - name: Generate Codebase Bundle
+        run: |
+          echo "================================================================================="
+          echo "Running Repomix to bundle the codebase..."
+          echo "================================================================================="
+          echo ""
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          echo ""
+
+          # Run repomix with the config file
+          repomix
+
+          echo ""
+          echo "================================================================================="
+          echo "Repomix bundle generated successfully!"
+          echo "Output file: repomix-output.txt"
+
+          # Show file size
+          ls -lh repomix-output.txt
+
+          # Show first few lines
+          echo ""
+          echo "Preview (first 50 lines):"
+          echo "-------------------------"
+          head -n 50 repomix-output.txt
+
+      - name: Upload Repomix Bundle as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: repomix-codebase-${{ github.ref_name }}-${{ github.sha }}
+          path: repomix-output.txt
+          retention-days: 30  # Keep artifacts for 30 days
+          compression-level: 9  # Maximum compression
+
+      - name: Upload Repomix Config as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: repomix-config-${{ github.ref_name }}-${{ github.sha }}
+          path: repomix.config.json
+          retention-days: 30
+
+      - name: Generate Summary
+        run: |
+          echo "### 📦 Repomix Codebase Bundle Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Get file stats
+          FILE_SIZE=$(du -h repomix-output.txt | cut -f1)
+          LINE_COUNT=$(wc -l < repomix-output.txt)
+
+          echo "**Bundle Size:** ${FILE_SIZE}" >> $GITHUB_STEP_SUMMARY
+          echo "**Line Count:** ${LINE_COUNT}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ The repomix bundle has been uploaded as a workflow artifact." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Download the artifact from the **Artifacts** section at the top of this workflow run." >> $GITHUB_STEP_SUMMARY

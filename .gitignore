@@ -42,6 +42,9 @@ htmlcov/
 # Logs
 *.log
 
+# Repomix output
+repomix-output.txt
+
 # OS
 .DS_Store
 Thumbs.db
