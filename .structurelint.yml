@@ -30,7 +30,6 @@ exclude:
 
 rules:
   # Phase 0: Basic filesystem rules
-  # Python projects benefit from relatively flat structure
   max-depth:
     max: 5
 
@@ -45,9 +44,9 @@ rules:
     "**/*.py": "snake_case"
     "**/": "snake_case"
 
-  # Documentation requirements
-  # Only root level requires README.md
-  # Subdirectories can optionally have README.md for documentation
+  # Documentation requirements - every directory should have a README
+  file-existence:
+    "README.md": "exists:1"
 
   # Disallow temporary and problematic files
   disallowed-patterns:
@@ -59,22 +58,18 @@ rules:
     - "**/__pycache__"
     - "**/*.pyc"
     - "**/*.pyo"
+    - "**/.pytest_cache"
 
   # Phase 3: Test File Validation
-  # Tests should be in the tests/ directory (separate from source)
-  # This project uses integration tests in tests/test_integration.py
-  # Individual unit tests can be added as the project grows
+  # All Python modules should have corresponding test files
   test-adjacency:
     pattern: "separate"
     test-dir: "tests"
     file-patterns:
       - "src/**/*.py"
+      - "tests/**/*.py"      # Also match test files for validation
     exemptions:
-      - "**/__init__.py"         # Package initializers don't need tests
-      - "**/__main__.py"         # Entry point has integration tests
-      - "**/lsp_client.py"       # Covered by integration tests
-      - "**/mcp_server.py"       # Covered by integration tests
-      - "**/workspace_edit.py"   # Covered by integration tests
+      - "**/__init__.py"      # Package initializers don't need tests
 
   test-location:
     integration-test-dir: "tests"
@@ -84,6 +79,7 @@ rules:
       - "**/test_*.py"
     exemptions:
       - "testdata/**"
+      - "example_project/**"
 
 # Overrides for specific directories
 overrides:
@@ -96,17 +92,16 @@ overrides:
   # Tests can be more flexible
   - files: ['tests/**']
     rules:
-      file-existence: 0       # Tests don't need README.md or __init__.py
       max-depth: { max: 5 }
       max-files-in-dir: { max: 25 }
 
-  # Root level documentation is allowed
+  # Root level can have more files (configs, docs, etc.)
   - files: ['.']
     rules:
-      max-files-in-dir: { max: 30 }  # Root has more files (configs, docs, etc.)
+      max-files-in-dir: { max: 30 }
 
 # Phase 1: Architectural layers
-# This MCP server has a simple two-layer architecture
+# This MCP server has a simple architecture
 layers:
   - name: mcp_server
     path: src/python_refactor_mcp/**
