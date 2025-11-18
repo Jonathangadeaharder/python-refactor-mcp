@@ -3,7 +3,6 @@
     "filePath": "repomix-output.txt",
     "style": "plain",
     "headerText": "Python Refactor MCP - Codebase Bundle",
-    "instructionFilePath": null,
     "removeComments": false,
     "removeEmptyLines": false,
     "topFilesLength": 10,
