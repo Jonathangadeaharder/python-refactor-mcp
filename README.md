@@ -332,6 +332,41 @@ cat test_execution.log
 
 See [`.github/workflows/README.md`](.github/workflows/README.md) for full documentation.
 
+### Project Structure Validation
+
+This project uses [structurelint](https://github.com/Jonathangadeaharder/structurelint) to enforce clean project organization and architectural integrity.
+
+**What structurelint checks:**
+- Directory depth and file count limits
+- Python naming conventions (snake_case)
+- Test file organization (separate tests/ directory)
+- Documentation requirements
+- Disallowed patterns (temporary files, build artifacts)
+- Architectural layer boundaries
+- Dead code detection
+
+**Configuration:**
+The project structure rules are defined in `.structurelint.yml`. The configuration is tailored for Python MCP servers with:
+- Maximum directory depth: 5 levels
+- Maximum files per directory: 20 (15 in src/)
+- Test files must be in `tests/` directory
+- Python snake_case naming conventions
+
+**Running structurelint:**
+```bash
+# Check project structure
+structurelint
+
+# Initialize config (if starting fresh)
+structurelint --init
+
+# Output as JSON for CI/CD
+structurelint --format json
+```
+
+**CI/CD Integration:**
+Structurelint runs automatically on every push via GitHub Actions (see `.github/workflows/structurelint.yml`). It's also included in the pre-commit hooks.
+
 ### Running Tests
 
 ```bash
@@ -350,7 +385,31 @@ black src/ tests/
 
 # Lint code
 ruff check src/ tests/
+
+# Check project structure
+structurelint
 ```
+
+### Pre-commit Hooks
+
+This project uses pre-commit hooks to maintain code quality:
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Install the hooks
+pre-commit install
+
+# Run manually on all files
+pre-commit run --all-files
+```
+
+The hooks include:
+- **black**: Code formatting
+- **ruff**: Python linting
+- **structurelint**: Project structure and architecture validation
+- Standard file checks (trailing whitespace, YAML/JSON validation, etc.)
 
 ## Troubleshooting
 
