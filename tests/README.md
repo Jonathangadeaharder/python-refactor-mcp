@@ -5,9 +5,10 @@ This directory contains the test suite for the Python Refactor MCP server.
 ## Test Structure
 
 - `test_integration.py` - End-to-end integration tests
-- `test_lsp_client.py` - Unit tests for LSP client
-- `test_mcp_server.py` - Unit tests for MCP server
-- `test_workspace_edit.py` - Unit tests for workspace edit functionality
+- `src/python_refactor_mcp/test_lsp_client.py` - Unit tests for LSP client
+- `src/python_refactor_mcp/test_mcp_server.py` - Unit tests for MCP server
+- `src/python_refactor_mcp/test_workspace_edit.py` - Unit tests for workspace edit functionality
+- `src/python_refactor_mcp/test___main__.py` - Unit tests for entry point
 - `example_project/` - Test fixtures and example Python project
 
 ## Running Tests

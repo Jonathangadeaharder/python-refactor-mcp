@@ -35,7 +35,7 @@ repos:
 
   # Structurelint - Project structure and architecture linting
   - repo: https://github.com/Jonathangadeaharder/structurelint
-    rev: main
+    rev: main  # TODO: Pin to specific version once tags or commit SHAs are available
     hooks:
       - id: structurelint
         name: structurelint

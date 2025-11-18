@@ -5,8 +5,7 @@ Tests the MCP server implementation and tool registration.
 """
 
 import pytest
-from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 from python_refactor_mcp.mcp_server import PythonRefactorMCPServer
 
 

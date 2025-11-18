@@ -6,7 +6,7 @@ Tests the safe application of LSP WorkspaceEdit objects to the file system.
 
 import pytest
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 from python_refactor_mcp.workspace_edit import WorkspaceEditManager
 
 

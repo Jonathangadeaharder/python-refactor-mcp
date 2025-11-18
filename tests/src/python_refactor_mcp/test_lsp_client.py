@@ -5,8 +5,7 @@ Tests the JSON-RPC client that communicates with Pyright language server.
 """
 
 import pytest
-from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 from python_refactor_mcp.lsp_client import LSPClient
 
 

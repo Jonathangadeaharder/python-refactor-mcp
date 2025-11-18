@@ -5,8 +5,7 @@ Tests the entry point and command-line argument handling.
 """
 
 import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
-import sys
+from unittest.mock import AsyncMock, patch
 from pathlib import Path
 
 
