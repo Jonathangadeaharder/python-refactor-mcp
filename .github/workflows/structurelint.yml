@@ -1,0 +1,84 @@
+name: Structurelint
+
+on:
+  push:
+    branches:
+      - 'claude/**'
+      - 'main'
+      - 'develop'
+  pull_request:
+    branches:
+      - 'main'
+      - 'develop'
+
+permissions:
+  contents: read
+
+jobs:
+  structurelint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Install structurelint
+        run: |
+          echo "Installing structurelint..."
+          git clone https://github.com/Jonathangadeaharder/structurelint.git /tmp/structurelint
+          cd /tmp/structurelint
+          go build -o structurelint ./cmd/structurelint
+          sudo mv structurelint /usr/local/bin/
+          echo "Structurelint version:"
+          structurelint --version
+
+      - name: Run structurelint
+        run: |
+          echo "================================================================================="
+          echo "Running Structurelint - Project Structure & Architecture Linter"
+          echo "================================================================================="
+          echo ""
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          echo ""
+          echo "================================================================================="
+          echo "Linting Results:"
+          echo "================================================================================="
+          echo ""
+
+          # Run structurelint
+          structurelint
+
+          echo ""
+          echo "================================================================================="
+          echo "✅ Structurelint checks passed!"
+          echo "================================================================================="
+
+      - name: Generate Summary
+        if: always()
+        run: |
+          echo "### 🏗️ Structurelint Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Run structurelint again to capture output for summary
+          if structurelint 2>&1 | grep -q "All checks passed"; then
+            echo "✅ **All structure checks passed!**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The project structure adheres to all configured rules." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Structure violations found!**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "See the job logs for details." >> $GITHUB_STEP_SUMMARY
+          fi

@@ -332,6 +332,68 @@ cat test_execution.log
 
 See [`.github/workflows/README.md`](.github/workflows/README.md) for full documentation.
 
+### Project Structure Validation
+
+This project uses [structurelint](https://github.com/Jonathangadeaharder/structurelint) to enforce clean project organization and architectural integrity with evidence-based quality metrics.
+
+**What structurelint enforces:**
+
+*Phase 0 - Filesystem Linting:*
+- Directory depth limits (max 5 levels)
+- File count restrictions (20 per directory, 15 in src/)
+- Subdirectory limits (max 10)
+- Python naming conventions (snake_case)
+- README.md requirements for documentation
+- Disallowed patterns (temp files, build artifacts)
+
+*Phase 1 - Architectural Layer Enforcement:*
+- Layer boundary validation
+- Prevents circular dependencies
+- Enforces clean architecture patterns
+
+*Phase 2 - Dead Code Detection:*
+- Orphaned file detection (disabled - Python import analysis pending)
+- Unused export detection (disabled - Python export analysis pending)
+
+*Phase 3 - Test Validation:*
+- Every source file requires corresponding test
+- Tests mirror source directory structure (`tests/src/python_refactor_mcp/`)
+- Separate test directory pattern enforced
+- Test location validation
+
+*Evidence-Based Complexity Metrics:*
+- **Cognitive Complexity (CoC)**: Measures code comprehension difficulty
+  - Research shows r=0.54 correlation with comprehension time
+  - Current threshold: 40 (target: 15 for new code)
+  - Penalizes nesting and control flow complexity
+- **Halstead Effort**: Captures data/operator complexity
+  - Research shows rs=0.901 correlation with cognitive load
+  - Threshold: 100,000 for Python
+  - Complements CoC by detecting different complexity patterns
+
+*Linter Configuration Enforcement:*
+- Validates Python linter configuration exists
+- Accepts config files (pyproject.toml) OR GitHub workflow
+- Ensures black, ruff, mypy are configured
+
+**Configuration Philosophy:**
+The `.structurelint.yml` implements research-backed quality gates that prevent technical debt accumulation. The configuration balances pragmatism (accommodating existing code) with best practices (guiding future development).
+
+**Running structurelint:**
+```bash
+# Check project structure
+structurelint
+
+# Initialize config (if starting fresh)
+structurelint --init
+
+# Output as JSON for CI/CD
+structurelint --format json
+```
+
+**CI/CD Integration:**
+Structurelint runs automatically on every push via GitHub Actions (see `.github/workflows/structurelint.yml`). It's also included in the pre-commit hooks.
+
 ### Running Tests
 
 ```bash
@@ -350,7 +412,31 @@ black src/ tests/
 
 # Lint code
 ruff check src/ tests/
+
+# Check project structure
+structurelint
 ```
+
+### Pre-commit Hooks
+
+This project uses pre-commit hooks to maintain code quality:
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Install the hooks
+pre-commit install
+
+# Run manually on all files
+pre-commit run --all-files
+```
+
+The hooks include:
+- **black**: Code formatting
+- **ruff**: Python linting
+- **structurelint**: Project structure and architecture validation
+- Standard file checks (trailing whitespace, YAML/JSON validation, etc.)
 
 ## Troubleshooting
 
