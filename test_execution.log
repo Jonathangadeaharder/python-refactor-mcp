@@ -2,9 +2,9 @@
 MCP-LSP Bridge - Integration Test Execution
 =================================================================================
 
-Execution Time: 2025-11-18 10:13:07 UTC
+Execution Time: 2025-11-18 10:19:10 UTC
 Branch: claude/setup-structurelint-01NYtVT8EzfVgXdDSHQXmDT5
-Commit: 728525d9766857640c4b9f593c47e9e5b44b0932
+Commit: 59c984575a0632d125a2adf1763625b6b5836112
 Triggered by: push
 
 =================================================================================
@@ -92,7 +92,7 @@ TEST 5: WorkspaceEdit Application (P0 - Critical)
 ================================================================================
 
 [Setup] Creating temporary test file...
-  Created test file: /tmp/tmpbdtmpr0l/test_rename.py
+  Created test file: /tmp/tmplf25shcv/test_rename.py
 
 [5.1] Generating WorkspaceEdit for rename 'total' → 'sum_value'...
 ✓ WorkspaceEdit generated
