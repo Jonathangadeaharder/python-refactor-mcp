@@ -1,0 +1,119 @@
+# Structurelint configuration for Python Refactor MCP
+# Enforces clean project structure and organization for Python MCP server
+
+root: true
+
+exclude:
+  # Version control
+  - .git/**
+  - .github/**
+
+  # Python artifacts
+  - __pycache__/**
+  - .pytest_cache/**
+  - "*.pyc"
+  - "*.pyo"
+  - "*.egg-info"
+
+  # Virtual environments
+  - venv/**
+  - .venv/**
+  - env/**
+
+  # Build artifacts
+  - dist/**
+  - build/**
+
+  # IDE
+  - .vscode/**
+  - .idea/**
+
+rules:
+  # Phase 0: Basic filesystem rules
+  # Python projects benefit from relatively flat structure
+  max-depth:
+    max: 5
+
+  max-files-in-dir:
+    max: 20
+
+  max-subdirs:
+    max: 10
+
+  # Python naming conventions - snake_case for everything
+  naming-convention:
+    "**/*.py": "snake_case"
+    "**/": "snake_case"
+
+  # Documentation requirements
+  # Only root level requires README.md
+  # Subdirectories can optionally have README.md for documentation
+
+  # Disallow temporary and problematic files
+  disallowed-patterns:
+    - "*.tmp"
+    - "*.bak"
+    - ".DS_Store"
+    - "Thumbs.db"
+    - "**/*.swp"
+    - "**/__pycache__"
+    - "**/*.pyc"
+    - "**/*.pyo"
+
+  # Phase 3: Test File Validation
+  # Tests should be in the tests/ directory (separate from source)
+  # This project uses integration tests in tests/test_integration.py
+  # Individual unit tests can be added as the project grows
+  test-adjacency:
+    pattern: "separate"
+    test-dir: "tests"
+    file-patterns:
+      - "src/**/*.py"
+    exemptions:
+      - "**/__init__.py"         # Package initializers don't need tests
+      - "**/__main__.py"         # Entry point has integration tests
+      - "**/lsp_client.py"       # Covered by integration tests
+      - "**/mcp_server.py"       # Covered by integration tests
+      - "**/workspace_edit.py"   # Covered by integration tests
+
+  test-location:
+    integration-test-dir: "tests"
+    allow-adjacent: false
+    file-patterns:
+      - "**/*_test.py"
+      - "**/test_*.py"
+    exemptions:
+      - "testdata/**"
+
+# Overrides for specific directories
+overrides:
+  # Source code in src/ - stricter rules
+  - files: ['src/**']
+    rules:
+      max-depth: { max: 4 }
+      max-files-in-dir: { max: 15 }
+
+  # Tests can be more flexible
+  - files: ['tests/**']
+    rules:
+      file-existence: 0       # Tests don't need README.md or __init__.py
+      max-depth: { max: 5 }
+      max-files-in-dir: { max: 25 }
+
+  # Root level documentation is allowed
+  - files: ['.']
+    rules:
+      max-files-in-dir: { max: 30 }  # Root has more files (configs, docs, etc.)
+
+# Phase 1: Architectural layers
+# This MCP server has a simple two-layer architecture
+layers:
+  - name: mcp_server
+    path: src/python_refactor_mcp/**
+    dependsOn: []
+
+# Phase 2: Dead code detection
+# Define entry points for the application
+entrypoints:
+  - src/python_refactor_mcp/__main__.py
+  - "tests/**/*.py"
